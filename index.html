@@ -443,6 +443,60 @@ footer span {
     <h2 id="gameTitle">NEON DODGE</h2>
     <p id="gameMessage">Avoid the glowing obstacles!</p>
     <canvas id="gameCanvas" width="600" height="350"></canvas>
+    
+<div id="clickerControls" style="display:none">
+  <div class="clicker-stats">
+    <div class="clicker-stat">
+      <span>PORTAL ENERGY</span>
+      <strong id="energyDisplay">0</strong>
+    </div>
+    <div class="clicker-stat">
+      <span>PER CLICK</span>
+      <strong id="powerDisplay">1</strong>
+    </div>
+    <div class="clicker-stat">
+      <span>MULTIPLIER</span>
+      <strong id="multiplierDisplay">x1</strong>
+    </div>
+    <div class="clicker-stat">
+      <span>ENERGY / SEC</span>
+      <strong id="autoDisplay">0</strong>
+    </div>
+  </div>
+
+  <h3>⚡ ENERGY UPGRADES</h3>
+  <div class="clicker-upgrades">
+    <button onclick="buyClickUpgrade()">
+      <b>Stronger Pulse</b>
+      <span id="clickUpgradeInfo">+1 energy per click</span>
+      <small id="clickUpgradeCost">Cost: 10</small>
+    </button>
+    <button onclick="buyMultiplier()">
+      <b>Reality Multiplier</b>
+      <span id="multiplierInfo">Multiply click energy</span>
+      <small id="multiplierCost">Cost: 100</small>
+    </button>
+    <button onclick="buyAutoUpgrade()">
+      <b>Auto-Charger</b>
+      <span id="autoUpgradeInfo">Generate energy automatically</span>
+      <small id="autoUpgradeCost">Cost: 50</small>
+    </button>
+  </div>
+
+  <h3>🌀 PORTAL EFFECTS</h3>
+  <div class="clicker-effects">
+    <button onclick="buyEffect('green')">🟢 Green Core <small>FREE</small></button>
+    <button onclick="buyEffect('blue')">🔵 Ice Rift <small>250 energy</small></button>
+    <button onclick="buyEffect('purple')">🟣 Void Portal <small>1,000 energy</small></button>
+    <button onclick="buyEffect('gold')">🟡 Solar Gate <small>5,000 energy</small></button>
+  </div>
+
+  <p id="clickerNotice">Click the glowing portal to collect energy!</p>
+  <button class="btn secondary" onclick="resetClickerSave()">
+    RESET CLICKER SAVE
+  </button>
+</div>
+
     <p style="margin:15px 0;color:#9bac9c">
       Move with A / D or the arrow keys. On mobile, tap the left or right side.
     </p>
