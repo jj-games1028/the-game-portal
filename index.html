@@ -1,0 +1,833 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Game Portal</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --green: #65ff45;
+  --dark: #050a08;
+  --panel: #101914;
+}
+
+body {
+  background: var(--dark);
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 24px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 5;
+}
+
+.logo {
+  font-size: 21px;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+.logo span {
+  color: var(--green);
+}
+
+.status {
+  color: var(--green);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 20px 55px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at center, #17351b 0%, #08120b 35%, #050a08 75%);
+}
+
+.stars {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .65;
+  background-image:
+    radial-gradient(2px 2px at 15% 20%, white 50%, transparent),
+    radial-gradient(2px 2px at 75% 15%, #aaff9c 50%, transparent),
+    radial-gradient(1px 1px at 30% 75%, white 50%, transparent),
+    radial-gradient(2px 2px at 88% 65%, white 50%, transparent),
+    radial-gradient(1px 1px at 55% 35%, white 50%, transparent),
+    radial-gradient(2px 2px at 12% 85%, #aaff9c 50%, transparent);
+  background-size: 330px 290px;
+}
+
+.portal {
+  position: absolute;
+  width: min(74vw, 570px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse at center,
+      #020703 0%,
+      #030a04 37%,
+      #173d16 43%,
+      #57ff36 47%,
+      #a5ff65 49%,
+      #1e9d22 53%,
+      #071509 60%,
+      transparent 69%);
+  filter: drop-shadow(0 0 25px #40ff35)
+          drop-shadow(0 0 80px #26c82c77);
+  animation: portalSpin 22s linear infinite;
+}
+
+.portal::before,
+.portal::after {
+  content: "";
+  position: absolute;
+  inset: 7%;
+  border-radius: 48% 52% 46% 54%;
+  border: 14px solid #75ff4c;
+  border-left-color: #133e16;
+  border-bottom-color: #b5ff83;
+  filter: blur(5px);
+  transform: rotate(25deg);
+}
+
+.portal::after {
+  inset: 13%;
+  border-width: 8px;
+  border-color: #36c832;
+  border-top-color: #c0ff9d;
+  border-right-color: #173c12;
+  transform: rotate(-35deg);
+}
+
+@keyframes portalSpin {
+  from { transform: rotate(0deg) scale(1); }
+  to { transform: rotate(360deg) scale(1); }
+}
+
+.hero-content {
+  width: 100%;
+  max-width: 650px;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 18px #000;
+}
+
+.eyebrow {
+  color: var(--green);
+  font-size: 12px;
+  letter-spacing: 5px;
+  margin-bottom: 18px;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: clamp(42px, 8vw, 76px);
+  line-height: 1;
+  letter-spacing: -3px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+h1 span {
+  color: var(--green);
+  text-shadow: 0 0 25px #58ff4777;
+}
+
+.subtitle {
+  color: #d0dfd0;
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+.btn {
+  display: inline-block;
+  border: 1px solid var(--green);
+  background: var(--green);
+  color: #061005;
+  padding: 15px 30px;
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: .2s;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background: white;
+  border-color: white;
+  box-shadow: 0 0 30px #65ff4588;
+  transform: translateY(-2px);
+}
+
+.btn.secondary {
+  background: #0b150d;
+  color: white;
+  border-color: #426a42;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.scroll-note {
+  margin-top: 55px;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #9cb49c;
+}
+
+section.library {
+  padding: 75px 6%;
+  background: linear-gradient(#080e09, #050a08);
+}
+
+.section-title {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.section-title span {
+  color: var(--green);
+}
+
+.section-description {
+  color: #9bac9c;
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+#search {
+  flex: 1;
+  min-width: 190px;
+  padding: 13px 15px;
+  background: #101914;
+  border: 1px solid #304433;
+  border-radius: 5px;
+  color: white;
+  outline: none;
+}
+
+#search:focus {
+  border-color: var(--green);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter {
+  background: #101914;
+  color: #c7d5c8;
+  border: 1px solid #304433;
+  padding: 10px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.filter.active,
+.filter:hover {
+  color: var(--green);
+  border-color: var(--green);
+}
+
+.games {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.game-card {
+  background: var(--panel);
+  border: 1px solid #243629;
+  border-radius: 9px;
+  overflow: hidden;
+  transition: .2s;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--green);
+}
+
+.game-art {
+  height: 140px;
+  display: grid;
+  place-items: center;
+  font-size: 48px;
+  background: radial-gradient(circle, #25552b, #101914 75%);
+}
+
+.game-card:nth-child(2n) .game-art {
+  background: radial-gradient(circle, #19494a, #101914 75%);
+}
+
+.game-info {
+  padding: 17px;
+}
+
+.game-info h3 {
+  margin-bottom: 8px;
+}
+
+.game-info p {
+  color: #9bac9c;
+  font-size: 13px;
+  line-height: 1.5;
+  min-height: 40px;
+  margin-bottom: 15px;
+}
+
+.game-info button {
+  width: 100%;
+  padding: 11px;
+  color: var(--green);
+  background: #142218;
+  border: 1px solid #38573b;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.game-info button:hover {
+  background: #203b22;
+}
+
+#playArea {
+  display: none;
+  padding: 35px 6%;
+  background: #0a110b;
+  text-align: center;
+}
+
+#playArea h2 {
+  margin-bottom: 15px;
+}
+
+#playArea canvas {
+  width: 100%;
+  max-width: 600px;
+  background: #020602;
+  border: 1px solid var(--green);
+  border-radius: 5px;
+  touch-action: manipulation;
+}
+
+#gameMessage {
+  color: #c4d4c4;
+  margin: 12px 0;
+}
+
+footer {
+  padding: 28px 6%;
+  border-top: 1px solid #203323;
+  text-align: center;
+  color: #849485;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+footer span {
+  color: var(--green);
+}
+
+@media (max-width: 600px) {
+  header { padding: 20px 5%; }
+  .logo { font-size: 16px; letter-spacing: 1px; }
+  .status { font-size: 9px; letter-spacing: 1px; }
+  .portal { width: 105vw; }
+  .hero { min-height: 90vh; }
+  h1 { letter-spacing: -2px; }
+  section.library { padding: 55px 5%; }
+  .games { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .game-art { height: 105px; }
+  .game-info { padding: 12px; }
+  .game-info h3 { font-size: 14px; }
+  .game-info p { font-size: 12px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">THE GAME <span>PORTAL</span></div>
+  <div class="status">● PORTAL ONLINE</div>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <div class="stars"></div>
+    <div class="portal"></div>
+
+    <div class="hero-content">
+      <div class="eyebrow">WELCOME, PLAYER</div>
+      <h1>Enter the <span>Unknown.</span></h1>
+      <p class="subtitle">
+        One portal. Endless possibilities.<br>
+        Your next favorite game is waiting.
+      </p>
+
+      <div class="menu-buttons">
+        <button class="btn" onclick="goToGames()">▶ &nbsp; PLAY NOW</button>
+        <button class="btn secondary" onclick="goToGames()">BROWSE GAMES</button>
+      </div>
+
+      <div class="scroll-note">▼ &nbsp; EXPLORE THE PORTAL &nbsp; ▼</div>
+    </div>
+  </section>
+
+  <section class="library" id="library">
+    <h2 class="section-title">THE <span>GAME LIBRARY</span></h2>
+    <p class="section-description">
+      Find your next adventure. More games will be added as the portal evolves.
+    </p>
+
+    <div class="toolbar">
+      <input id="search" type="search" placeholder="Search games..." oninput="renderGames()">
+    </div>
+
+    <div class="filters">
+      <button class="filter active" onclick="setFilter('All',this)">All Games</button>
+      <button class="filter" onclick="setFilter('Arcade',this)">Arcade</button>
+      <button class="filter" onclick="setFilter('Puzzle',this)">Puzzle</button>
+      <button class="filter" onclick="setFilter('Action',this)">Action</button>
+      <button class="filter" onclick="setFilter('Favorites',this)">♥ Favorites</button>
+    </div>
+
+    <div class="games" id="games"></div>
+  </section>
+
+  <section id="playArea">
+    <h2 id="gameTitle">NEON DODGE</h2>
+    <p id="gameMessage">Avoid the glowing obstacles!</p>
+    <canvas id="gameCanvas" width="600" height="350"></canvas>
+    <p style="margin:15px 0;color:#9bac9c">
+      Move with A / D or the arrow keys. On mobile, tap the left or right side.
+    </p>
+    <button class="btn" onclick="startDodge()">RESTART GAME</button>
+    <button class="btn secondary" onclick="closeGame()">BACK TO LIBRARY</button>
+  </section>
+</main>
+
+<footer>
+  <div>© 2026 <span>THE GAME PORTAL</span></div>
+  An original gaming website in development.<br>
+  Game availability depends on the games we add.
+</footer>
+
+<script>
+const gameList = [
+  {
+    name: "Neon Dodge",
+    category: "Arcade",
+    icon: "⚡",
+    description: "Dodge the energy orbs and survive as long as possible.",
+    playable: true
+  },
+  {
+    name: "Portal Clicker",
+    category: "Arcade",
+    icon: "🌀",
+    description: "Click the portal core to build your score.",
+    playable: true
+  },
+  {
+    name: "Mind Maze",
+    category: "Puzzle",
+    icon: "◇",
+    description: "A future puzzle adventure waiting to be built.",
+    playable: false
+  },
+  {
+    name: "Shadow Runner",
+    category: "Action",
+    icon: "➤",
+    description: "A fast-paced action game planned for the portal.",
+    playable: false
+  },
+  {
+    name: "Pixel Quest",
+    category: "Arcade",
+    icon: "▦",
+    description: "Explore a retro-inspired pixel world.",
+    playable: false
+  },
+  {
+    name: "Quantum Grid",
+    category: "Puzzle",
+    icon: "✣",
+    description: "Solve challenges across a futuristic grid.",
+    playable: false
+  }
+];
+
+let currentFilter = "All";
+let favorites = new Set();
+let currentGame = "";
+let animation = null;
+let playerX = 300;
+let obstacles = [];
+let score = 0;
+let running = false;
+let clickScore = 0;
+let clickGameActive = false;
+let lastSpawn = 0;
+let startTime = 0;
+
+function goToGames() {
+  document.getElementById("library").scrollIntoView({ behavior: "smooth" });
+}
+
+function setFilter(category, button) {
+  currentFilter = category;
+  document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
+  button.classList.add("active");
+  renderGames();
+}
+
+function renderGames() {
+  const search = document.getElementById("search").value.toLowerCase();
+  const container = document.getElementById("games");
+  container.innerHTML = "";
+
+  const filtered = gameList.filter(game => {
+    const matchesCategory =
+      currentFilter === "All" ||
+      (currentFilter === "Favorites"
+        ? favorites.has(game.name)
+        : game.category === currentFilter);
+
+    return matchesCategory &&
+      (game.name + " " + game.description).toLowerCase().includes(search);
+  });
+
+  if (!filtered.length) {
+    container.innerHTML =
+      '<p style="color:#9bac9c;padding:25px 0">No games found. Try another search.</p>';
+    return;
+  }
+
+  filtered.forEach(game => {
+    const card = document.createElement("article");
+    card.className = "game-card";
+
+    const art = document.createElement("div");
+    art.className = "game-art";
+    art.textContent = game.icon;
+
+    const info = document.createElement("div");
+    info.className = "game-info";
+
+    const title = document.createElement("h3");
+    title.textContent = game.name;
+
+    const description = document.createElement("p");
+    description.textContent = game.description;
+
+    const favorite = document.createElement("button");
+    favorite.style.marginBottom = "9px";
+    favorite.textContent = favorites.has(game.name)
+      ? "♥ Favorited"
+      : "♡ Add to Favorites";
+
+    favorite.onclick = () => {
+      if (favorites.has(game.name)) {
+        favorites.delete(game.name);
+      } else {
+        favorites.add(game.name);
+      }
+      renderGames();
+    };
+
+    const play = document.createElement("button");
+    play.textContent = game.playable ? "PLAY GAME ▶" : "COMING SOON";
+    play.onclick = () => {
+      if (!game.playable) {
+        alert("This game hasn't been built yet. We can add it in a future update!");
+        return;
+      }
+      openGame(game.name);
+    };
+
+    info.append(title, description, favorite, play);
+    card.append(art, info);
+    container.appendChild(card);
+  });
+}
+
+function openGame(name) {
+  currentGame = name;
+  document.getElementById("playArea").style.display = "block";
+  document.getElementById("playArea").scrollIntoView({ behavior: "smooth" });
+
+  document.getElementById("gameTitle").textContent = name.toUpperCase();
+
+  if (name === "Neon Dodge") {
+    startDodge();
+  } else {
+    startClicker();
+  }
+}
+
+function closeGame() {
+  running = false;
+  clickGameActive = false;
+  if (animation) cancelAnimationFrame(animation);
+  document.getElementById("playArea").style.display = "none";
+  goToGames();
+}
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+function drawBackground() {
+  ctx.fillStyle = "#050b07";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = "#18331b";
+  ctx.lineWidth = 1;
+
+  for (let x = 0; x < canvas.width; x += 30) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, canvas.height);
+    ctx.stroke();
+  }
+
+  for (let y = 0; y < canvas.height; y += 30) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(canvas.width, y);
+    ctx.stroke();
+  }
+}
+
+function startDodge() {
+  running = true;
+  clickGameActive = false;
+  if (animation) cancelAnimationFrame(animation);
+
+  playerX = 300;
+  obstacles = [];
+  score = 0;
+  lastSpawn = 0;
+  startTime = performance.now();
+
+  document.getElementById("gameMessage").textContent =
+    "Avoid the glowing obstacles!";
+  animation = requestAnimationFrame(dodgeLoop);
+}
+
+function dodgeLoop(time) {
+  if (!running || currentGame !== "Neon Dodge") return;
+
+  drawBackground();
+
+  const elapsed = (time - startTime) / 1000;
+  score = Math.floor(elapsed * 10);
+
+  ctx.fillStyle = "#65ff45";
+  ctx.font = "bold 16px Arial";
+  ctx.fillText("SCORE: " + score, 18, 27);
+
+  if (time - lastSpawn > Math.max(260, 800 - elapsed * 15)) {
+    obstacles.push({
+      x: 15 + Math.random() * (canvas.width - 30),
+      y: -15,
+      size: 7 + Math.random() * 7,
+      speed: 2.5 + Math.random() * 2 + elapsed * 0.04
+    });
+    lastSpawn = time;
+  }
+
+  obstacles.forEach(o => {
+    o.y += o.speed;
+
+    ctx.beginPath();
+    ctx.arc(o.x, o.y, o.size, 0, Math.PI * 2);
+    ctx.fillStyle = "#ff5a89";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#ff5a89";
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  });
+
+  obstacles = obstacles.filter(o => o.y < canvas.height + 20);
+
+  ctx.beginPath();
+  ctx.moveTo(playerX, 305);
+  ctx.lineTo(playerX - 15, 330);
+  ctx.lineTo(playerX + 15, 330);
+  ctx.closePath();
+  ctx.fillStyle = "#65ff45";
+  ctx.shadowBlur = 18;
+  ctx.shadowColor = "#65ff45";
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  for (const o of obstacles) {
+    if (Math.hypot(o.x - playerX, o.y - 318) < o.size + 12) {
+      running = false;
+      ctx.fillStyle = "#ff5a89";
+      ctx.font = "bold 32px Arial";
+      ctx.textAlign = "center";
+      ctx.fillText("GAME OVER", 300, 160);
+      ctx.font = "18px Arial";
+      ctx.fillStyle = "white";
+      ctx.fillText("Score: " + score, 300, 195);
+      ctx.textAlign = "left";
+      document.getElementById("gameMessage").textContent =
+        "You survived for " + elapsed.toFixed(1) +
+        " seconds. Press restart to try again.";
+      return;
+    }
+  }
+
+  document.getElementById("gameMessage").textContent =
+    "Score: " + score + " — Keep dodging!";
+
+  animation = requestAnimationFrame(dodgeLoop);
+}
+
+document.addEventListener("keydown", event => {
+  if (!running || currentGame !== "Neon Dodge") return;
+
+  if (["ArrowLeft", "ArrowRight", "a", "d", "A", "D"].includes(event.key)) {
+    event.preventDefault();
+  }
+
+  if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
+    playerX = Math.max(15, playerX - 25);
+  }
+
+  if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
+    playerX = Math.min(canvas.width - 15, playerX + 25);
+  }
+});
+
+canvas.addEventListener("pointerdown", event => {
+  if (!clickGameActive || currentGame !== "Portal Clicker") return;
+
+  const rect = canvas.getBoundingClientRect();
+  const x = (event.clientX - rect.left) * canvas.width / rect.width;
+  const y = (event.clientY - rect.top) * canvas.height / rect.height;
+
+  if (Math.hypot(x - 300, y - 175) < 90) {
+    clickScore++;
+    document.getElementById("gameMessage").textContent =
+      "Portal energy: " + clickScore + " / 30";
+
+    if (clickScore >= 30) {
+      clickGameActive = false;
+      drawBackground();
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#65ff45";
+      ctx.font = "bold 32px Arial";
+      ctx.fillText("PORTAL CHARGED!", 300, 175);
+      ctx.fillStyle = "white";
+      ctx.font = "18px Arial";
+      ctx.fillText("You did it!", 300, 210);
+      ctx.textAlign = "left";
+    } else {
+      drawClicker();
+    }
+  }
+});
+
+function startClicker() {
+  running = false;
+  clickGameActive = true;
+  clickScore = 0;
+  if (animation) cancelAnimationFrame(animation);
+
+  document.getElementById("gameMessage").textContent =
+    "Tap the green portal 30 times to charge it!";
+  drawClicker();
+}
+
+function drawClicker() {
+  if (!clickGameActive || currentGame !== "Portal Clicker") return;
+
+  drawBackground();
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "#c4d4c4";
+  ctx.font = "16px Arial";
+  ctx.fillText("TAP THE PORTAL", 300, 65);
+
+  const pulse = 48 + Math.sin(performance.now() / 180) * 5;
+
+  ctx.beginPath();
+  ctx.arc(300, 175, pulse + 15, 0, Math.PI * 2);
+  ctx.strokeStyle = "#65ff4588";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+
+  const gradient = ctx.createRadialGradient(285, 160, 2, 300, 175, pulse);
+  gradient.addColorStop(0, "#d9ffc8");
+  gradient.addColorStop(.5, "#65ff45");
+  gradient.addColorStop(1, "#126d20");
+
+  ctx.beginPath();
+  ctx.arc(300, 175, pulse, 0, Math.PI * 2);
+  ctx.fillStyle = gradient;
+  ctx.shadowBlur = 30;
+  ctx.shadowColor = "#65ff45";
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 24px Arial";
+  ctx.fillText(clickScore + " / 30", 300, 270);
+  ctx.textAlign = "left";
+
+  animation = requestAnimationFrame(drawClicker);
+}
+
+renderGames();
+</script>
+
+</body>
+</html>
