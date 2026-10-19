@@ -668,7 +668,209 @@ let playerX = 300;
 let obstacles = [];
 let score = 0;
 let running = false;
-let clickScore = 0;
+
+const CLICKER_SAVE_KEY = "theGamePortalClickerSave_v2";
+
+let clickEnergy = 0;
+let clickPowerLevel = 0;
+let multiplierLevel = 0;
+let autoLevel = 0;
+let activeEffect = "green";
+let unlockedEffects = ["green"];
+let lastAutoTick = Date.now();
+
+function loadClickerSave() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CLICKER_SAVE_KEY));
+    if (!saved) return;
+
+    clickEnergy = Math.max(0, Number(saved.energy) || 0);
+    clickPowerLevel = Math.max(0, Number(saved.powerLevel) || 0);
+    multiplierLevel = Math.max(0, Number(saved.multiplierLevel) || 0);
+    autoLevel = Math.max(0, Number(saved.autoLevel) || 0);
+
+    const allowed = ["green", "blue", "purple", "gold"];
+    unlockedEffects = Array.isArray(saved.unlockedEffects)
+      ? saved.unlockedEffects.filter(effect => allowed.includes(effect))
+      : ["green"];
+
+    if (!unlockedEffects.includes("green")) unlockedEffects.push("green");
+
+    activeEffect = unlockedEffects.includes(saved.activeEffect)
+      ? saved.activeEffect
+      : "green";
+  } catch (error) {
+    console.warn("Could not load Portal Clicker save.", error);
+  }
+}
+
+function saveClicker() {
+  try {
+    localStorage.setItem(CLICKER_SAVE_KEY, JSON.stringify({
+      energy: clickEnergy,
+      powerLevel: clickPowerLevel,
+      multiplierLevel,
+      autoLevel,
+      activeEffect,
+      unlockedEffects
+    }));
+  } catch (error) {
+    console.warn("Could not save Portal Clicker progress.", error);
+  }
+}
+
+loadClickerSave();
+
+function formatEnergy(value) {
+  if (value >= 1e9) return (value / 1e9).toFixed(2) + "B";
+  if (value >= 1e6) return (value / 1e6).toFixed(2) + "M";
+  if (value >= 1e3) return (value / 1e3).toFixed(1) + "K";
+  return Math.floor(value).toLocaleString();
+}
+
+function currentMultiplier() {
+  return Math.pow(2, multiplierLevel);
+}
+
+function currentPower() {
+  return 1 + clickPowerLevel;
+}
+
+function currentAutoRate() {
+  return autoLevel * 2;
+}
+
+function clickUpgradePrice() {
+  return Math.floor(10 * Math.pow(1.7, clickPowerLevel));
+}
+
+function multiplierPrice() {
+  return Math.floor(100 * Math.pow(2.2, multiplierLevel));
+}
+
+function autoUpgradePrice() {
+  return Math.floor(50 * Math.pow(1.8, autoLevel));
+}
+
+function updateClickerUI() {
+  document.getElementById("energyDisplay").textContent = formatEnergy(clickEnergy);
+  document.getElementById("powerDisplay").textContent =
+    formatEnergy(currentPower() * currentMultiplier());
+  document.getElementById("multiplierDisplay").textContent =
+    "x" + currentMultiplier();
+  document.getElementById("autoDisplay").textContent = formatEnergy(currentAutoRate());
+
+  document.getElementById("clickUpgradeInfo").textContent =
+    "Level " + clickPowerLevel + " • +" + formatEnergy(currentMultiplier()) + " per click";
+  document.getElementById("clickUpgradeCost").textContent =
+    "Cost: " + formatEnergy(clickUpgradePrice());
+
+  document.getElementById("multiplierInfo").textContent =
+    "Current boost: x" + currentMultiplier();
+  document.getElementById("multiplierCost").textContent =
+    "Cost: " + formatEnergy(multiplierPrice());
+
+  document.getElementById("autoUpgradeInfo").textContent =
+    "Level " + autoLevel + " • +2 energy/sec per level";
+  document.getElementById("autoUpgradeCost").textContent =
+    "Cost: " + formatEnergy(autoUpgradePrice());
+}
+
+function notifyClicker(message) {
+  document.getElementById("clickerNotice").textContent = message;
+}
+
+function buyClickUpgrade() {
+  const cost = clickUpgradePrice();
+
+  if (clickEnergy < cost) {
+    notifyClicker("Not enough energy for Stronger Pulse!");
+    return;
+  }
+
+  clickEnergy -= cost;
+  clickPowerLevel++;
+  saveClicker();
+  updateClickerUI();
+  notifyClicker("Stronger Pulse upgraded!");
+}
+
+function buyMultiplier() {
+  const cost = multiplierPrice();
+
+  if (clickEnergy < cost) {
+    notifyClicker("Not enough energy for Reality Multiplier!");
+    return;
+  }
+
+  clickEnergy -= cost;
+  multiplierLevel++;
+  saveClicker();
+  updateClickerUI();
+  notifyClicker("Your multiplier is now x" + currentMultiplier() + "!");
+}
+
+function buyAutoUpgrade() {
+  const cost = autoUpgradePrice();
+
+  if (clickEnergy < cost) {
+    notifyClicker("Not enough energy for Auto-Charger!");
+    return;
+  }
+
+  clickEnergy -= cost;
+  autoLevel++;
+  saveClicker();
+  updateClickerUI();
+  notifyClicker("Auto-Charger upgraded!");
+}
+
+function buyEffect(effect) {
+  const prices = {
+    green: 0,
+    blue: 250,
+    purple: 1000,
+    gold: 5000
+  };
+
+  if (!(effect in prices)) return;
+
+  if (unlockedEffects.includes(effect)) {
+    activeEffect = effect;
+    saveClicker();
+    notifyClicker(effect.toUpperCase() + " portal equipped!");
+    return;
+  }
+
+  if (clickEnergy < prices[effect]) {
+    notifyClicker("You need " + prices[effect] + " energy to unlock this effect.");
+    return;
+  }
+
+  clickEnergy -= prices[effect];
+  unlockedEffects.push(effect);
+  activeEffect = effect;
+  saveClicker();
+  updateClickerUI();
+  notifyClicker(effect.toUpperCase() + " portal effect unlocked!");
+}
+
+function resetClickerSave() {
+  if (!confirm("Reset all Portal Clicker progress? This cannot be undone.")) return;
+
+  clickEnergy = 0;
+  clickPowerLevel = 0;
+  multiplierLevel = 0;
+  autoLevel = 0;
+  activeEffect = "green";
+  unlockedEffects = ["green"];
+  lastAutoTick = Date.now();
+
+  saveClicker();
+  updateClickerUI();
+  notifyClicker("Portal Clicker progress reset.");
+}
+
 let clickGameActive = false;
 let lastSpawn = 0;
 let startTime = 0;
